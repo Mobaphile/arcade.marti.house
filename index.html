@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arcade - Marti House</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #0064ff;
+        }
+        .game-selector {
+            margin: 20px 0;
+        }
+        select, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        #game {
+            width: 100%;
+            height: 600px;
+            margin-top: 20px;
+        }
+        .info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>??️ Arcade - Marti House</h1>
+        
+        <div class="info">
+            <p><strong>Instructions:</strong></p>
+            <ol>
+                <li>Add ROM files to the <code>/var/www/arcade.marti.house/roms/[console]/</code> folders</li>
+                <li>Update the game lists in this HTML file</li>
+                <li>Select a console and game, then click "Load Game"</li>
+            </ol>
+        </div>
+        
+        <div class="game-selector">
+            <label for="console-select">Console: </label>
+            <select id="console-select">
+                <option value="nes">Nintendo (NES)</option>
+                <option value="snes">Super Nintendo (SNES)</option>
+                <option value="gb">Game Boy</option>
+                <option value="gbc">Game Boy Color</option>
+                <option value="gba">Game Boy Advance</option>
+                <option value="genesis">Sega Genesis</option>
+                <option value="segaCD">Sega CD</option>
+                <option value="sega32x">Sega 32X</option>
+                <option value="atari2600">Atari 2600</option>
+                <option value="atari7800">Atari 7800</option>
+            </select>
+            
+            <label for="game-select">Game: </label>
+            <select id="game-select">
+                <option value="">Select a game...</option>
+            </select>
+            
+            <button onclick="loadGame()">Load Game</button>
+        </div>
+        
+        <div id="game"></div>
+    </div>
+
+    <script>
+        // Game lists - Add your ROM files here
+        const games = {
+            nes: [
+                // Example: 'Super Mario Bros.nes',
+                // 'The Legend of Zelda.nes'
+            ],
+            snes: [
+                // Example: 'Super Mario World.smc',
+                // 'The Legend of Zelda - A Link to the Past.smc'
+            ],
+            gb: [],
+            gbc: [],
+            gba: [
+                'FRLGPlus.gba'
+            ],
+            genesis: [],
+            segaCD: [],
+            sega32x: [],
+            atari2600: [],
+            atari7800: []
+        };
+
+        function loadGame() {
+            const console = document.getElementById('console-select').value;
+            const game = document.getElementById('game-select').value;
+            
+            if (!game) {
+                alert('Please select a game');
+                return;
+            }
+
+            // Clear previous game
+            document.getElementById('game').innerHTML = '';
+
+            // EmulatorJS configuration
+            window.EJS_player = '#game';
+            window.EJS_core = console;
+            window.EJS_gameName = game.split('.')[0];
+            window.EJS_gameUrl = `roms/${console}/${game}`;
+            window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+            window.EJS_color = '#0064ff';
+
+            // Load the emulator from CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+            document.body.appendChild(script);
+        }
+
+        // Update game list when console changes
+        document.getElementById('console-select').addEventListener('change', function() {
+            const console = this.value;
+            const gameSelect = document.getElementById('game-select');
+            gameSelect.innerHTML = '<option value="">Select a game...</option>';
+            
+            games[console].forEach(game => {
+                const option = document.createElement('option');
+                option.value = game;
+                option.textContent = game.split('.')[0];
+                gameSelect.appendChild(option);
+            });
+        });
+    </script>
+</body>
+</html>
