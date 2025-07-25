@@ -2,3 +2,5 @@ roms/gba/FRLGPlus.gba
 minify/minify.js
 roms/nes/Blade Buster.nes
 roms/*
+backend/node_modules/*
+backend/data/emulator_auth.db
